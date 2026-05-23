@@ -6,6 +6,26 @@ Xfce Terminal is a lightweight and easy to use terminal emulator application
 with many advanced features including drop down, tabs, unlimited scrolling,
 full colors, fonts, transparent backgrounds, and more.
 
+## Fork feature: naming tabs from the tab strip
+
+This fork adds a direct tab naming path. Right-click a terminal tab, choose
+`Set Title...`, enter a name, and that tab label changes.
+
+This is meant for users who keep many terminal tasks open at once. When 12 to
+15 tabs are running different jobs, shell-provided titles are often not enough
+to tell each task apart. A short name on the tab makes the window easier to
+scan.
+
+The change is small:
+
+- `terminal/terminal-window.c` selects the tab that was right-clicked before it
+  opens the tab context menu.
+- The tab context menu adds the existing `TERMINAL_WINDOW_ACTION_SET_TITLE`
+  action.
+- The existing title popover still edits the active screen's `custom-title`.
+- The normal top-level Tabs menu is left unchanged.
+- No new preference, title editor, or translatable string is added.
+
 ----
 
 ### Homepage
@@ -57,4 +77,3 @@ From release tarball:
 ### Reporting Bugs
 
 Visit the [reporting bugs](https://docs.xfce.org/apps/xfce4-terminal/bugs) page to view currently open bug reports and instructions on reporting new bugs or submitting bugfixes.
-
