@@ -331,6 +331,9 @@ static void
 terminal_window_update_tabs_menu (TerminalWindow *window,
                                   GtkWidget *menu);
 static void
+terminal_window_update_tab_context_menu (TerminalWindow *window,
+                                         GtkWidget *menu);
+static void
 terminal_window_update_help_menu (TerminalWindow *window,
                                   GtkWidget *menu);
 static gboolean
@@ -1905,7 +1908,7 @@ terminal_window_notebook_button_press_event (GtkNotebook *notebook,
 
           /* show the tab menu */
           menu = gtk_menu_new ();
-          terminal_window_update_tabs_menu (window, menu);
+          terminal_window_update_tab_context_menu (window, menu);
           gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
         }
 
@@ -4010,8 +4013,9 @@ terminal_window_update_terminal_menu (TerminalWindow *window,
 
 
 static void
-terminal_window_update_tabs_menu (TerminalWindow *window,
-                                  GtkWidget *menu)
+terminal_window_update_tabs_menu_with_options (TerminalWindow *window,
+                                               GtkWidget *menu,
+                                               gboolean show_title_action)
 {
   GtkWidget *item;
   gint n_pages;
@@ -4034,6 +4038,12 @@ terminal_window_update_tabs_menu (TerminalWindow *window,
   can_go_right = terminal_window_can_go_right (window);
 
   terminal_window_menu_clean (GTK_MENU (menu));
+  if (show_title_action)
+    {
+      xfce_gtk_menu_item_new_from_action_entry (get_action_entry (TERMINAL_WINDOW_ACTION_SET_TITLE), G_OBJECT (window), GTK_MENU_SHELL (menu));
+      xfce_gtk_menu_append_separator (GTK_MENU_SHELL (menu));
+    }
+
   item = xfce_gtk_menu_item_new_from_action_entry (get_action_entry (TERMINAL_WINDOW_ACTION_PREV_TAB), G_OBJECT (window), GTK_MENU_SHELL (menu));
   gtk_widget_set_sensitive (item, can_go_left);
   item = xfce_gtk_menu_item_new_from_action_entry (get_action_entry (TERMINAL_WINDOW_ACTION_NEXT_TAB), G_OBJECT (window), GTK_MENU_SHELL (menu));
@@ -4095,6 +4105,24 @@ terminal_window_update_tabs_menu (TerminalWindow *window,
   G_GNUC_END_IGNORE_DEPRECATIONS
 
   gtk_widget_show_all (GTK_WIDGET (menu));
+}
+
+
+
+static void
+terminal_window_update_tabs_menu (TerminalWindow *window,
+                                  GtkWidget *menu)
+{
+  terminal_window_update_tabs_menu_with_options (window, menu, FALSE);
+}
+
+
+
+static void
+terminal_window_update_tab_context_menu (TerminalWindow *window,
+                                         GtkWidget *menu)
+{
+  terminal_window_update_tabs_menu_with_options (window, menu, TRUE);
 }
 
 
